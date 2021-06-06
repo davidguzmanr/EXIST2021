@@ -4,3 +4,5 @@ torch==1.7.1
 torchtext==0.8.1
 torchinfo==0.0.8
 transformers==4.5.1
+autocorrect==2.5.0
+
