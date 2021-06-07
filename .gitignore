@@ -1,6 +1,10 @@
 # Slides
 Presentación/
 
+# Word embeddings, quite heavy
+Notebooks/task-1/.vector_cache/
+Notebooks/task-2/.vector_cache/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
