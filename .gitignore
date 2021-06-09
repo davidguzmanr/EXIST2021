@@ -1,9 +1,16 @@
 # Slides
 Presentación/
 
+# Images for the slides
+# Notebooks/Images/
+
 # Word embeddings, quite heavy
 Notebooks/task-1/.vector_cache/
 Notebooks/task-2/.vector_cache/
+
+# Directory for trained models, also heavy because of BERT
+Notebooks/task-1/models
+Notebooks/task-2/models
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

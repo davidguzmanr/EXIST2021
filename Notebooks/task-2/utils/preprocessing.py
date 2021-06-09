@@ -58,12 +58,18 @@ def preprocess(text):
     # Remove urls
     url_pattern = r'http\S+'
     text = re.sub(url_pattern, '', text)
+    # Spell check separates the @ from the usernames
+    # text = re.sub('@ ', '@', text)
 
     # Lowercase, remove repetitions and remove usernames
     text = tweet_tokenizer.tokenize(text)
     
     # Join everything
     text = ' '.join(text)
+
+    # Sometimes all the text is just an url
+    if text == '' or text == ' ':
+        text = 'url'
     
     return text
 

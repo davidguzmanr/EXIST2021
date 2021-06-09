@@ -85,27 +85,26 @@ def test(model, loader_test):
     """
     model.eval()
     
-    accs = []
+    f1_scores = []
     epochs_loss = []
     for ids, masks, y_true in loader_test:
         ids = ids.to(device)
         masks = masks.to(device)
         y_true = y_true.to(device)
         
-        y_hat = model(ids, masks)
-        
+        y_hat = model(ids, masks)        
         y_pred = torch.argmax(y_hat, 1)
-        
-        acc = (y_true == y_pred).type(torch.float32).mean()
-        
-        accs.append(acc.item())
 
         loss = F.cross_entropy(y_hat, y_true)
         epochs_loss.append(loss.item())
         
-    return np.mean(accs), np.mean(epochs_loss)
+        f1 = f1_score(y_true.cpu().numpy(), y_pred.cpu().numpy(), average='macro')        
+        f1_scores.append(f1)
+        
+        
+    return np.mean(f1_scores), np.mean(epochs_loss)
 
-def plot_history(losses_train, losses_test, accs_train, accs_test, epoch):
+def plot_history(losses_train, losses_test, f1_scores_train, f1_scores_test, epoch):
     """
     Plots the losses and accuracies of the model.
 
@@ -132,10 +131,10 @@ def plot_history(losses_train, losses_test, accs_train, accs_test, epoch):
     ax0.set_ylabel('Loss (cross entropy)', weight='bold')
     ax0.legend()
 
-    ax1.plot(np.arange(1, epoch+2), accs_train, marker='o', label='Train')
-    ax1.plot(np.arange(1, epoch+2), accs_test, marker='o', label='Test')
+    ax1.plot(np.arange(1, epoch+2), f1_scores_train, marker='o', label='Train')
+    ax1.plot(np.arange(1, epoch+2), f1_scores_test, marker='o', label='Test')
     ax1.set_xlabel('Epochs', weight='bold')
-    ax1.set_ylabel('Accuracy', weight='bold')
+    ax1.set_ylabel('F1 score', weight='bold')
     ax1.legend()
 
     plt.show()
@@ -166,12 +165,12 @@ def train(model, loader_train, loader_test, epochs, lr=1e-5):
     """
     opt = optim.Adam(model.parameters(), lr=lr)
     
-    accs_train, accs_test = [], []   
+    f1_scores_train, f1_scores_test = [], []   
     losses_train, losses_test = [], [] 
     for epoch in range(epochs):
         model.train()
         
-        accs, losses = [], []
+        f1_scores, losses = [], []
         for ids, masks, y_true in tqdm(loader_train):
             opt.zero_grad()
 
@@ -184,28 +183,28 @@ def train(model, loader_train, loader_test, epochs, lr=1e-5):
             loss = F.cross_entropy(y_hat, y_true)
             
             y_pred = torch.argmax(y_hat, dim=1)
-            
-            acc = (y_true == y_pred).type(torch.float32).mean()
-            accs.append(acc.item())
-            
+
+            f1 = f1_score(y_true.cpu().numpy(), y_pred.cpu().numpy(), average='macro')
+            f1_scores.append(f1)
+                        
             loss.backward()
             losses.append(loss.item())
             opt.step()
         
-        acc_train = np.mean(accs)
+        f1_score_train = np.mean(f1_scores)
         loss_train = np.mean(losses)
-        accs_train.append(acc_train)
+        f1_scores_train.append(f1_score_train)
         losses_train.append(loss_train)
         
-        acc_test, loss_test = test(model, loader_test)
-        accs_test.append(acc_test)
+        f1_score_test, loss_test = test(model, loader_test)
+        f1_scores_test.append(f1_score_test)
         losses_test.append(loss_test)
         
         clear_output(wait=True)
-        print(f'Epoch {epoch + 1}: train acc:{acc_train} test acc:{acc_test}')
-        plot_history(losses_train, losses_test, accs_train, accs_test, epoch)
+        print(f'Epoch {epoch + 1}: train F1:{f1_score_train} test F1:{f1_score_test}')
+        plot_history(losses_train, losses_test, f1_scores_train, f1_scores_test, epoch)
         
-    return losses_train, losses_test, accs_train, accs_test
+    return losses_train, losses_test, f1_scores_train, f1_scores_test
 
 berttokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-uncased')
 def predict_sexism(model, text, label=True):
@@ -226,7 +225,8 @@ def predict_sexism(model, text, label=True):
     int or str
         Index or label of the prediction.  
     """
-    labels_dict = {0: 'non-sexist', 1: 'sexist'}
+    labels_dict = {0: 'ideological-inequality', 1: 'misogyny-non-sexual-violence',
+                   2: 'objectification', 3: 'sexual-violence', 4: 'stereotyping-dominance'}
 
     # Apply the same preprocessing
     text = preprocess(text)
