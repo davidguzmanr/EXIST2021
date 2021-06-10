@@ -1,5 +1,5 @@
 # exist2021
-My solution for [EXIST (sEXism Identification in Social neTworks) is the First Shared Task at IberLEF 2021](http://nlp.uned.es/exist2021/).
+My solution for [EXIST (sEXism Identification in Social neTworks)](http://nlp.uned.es/exist2021/).
 
 First, create a virtual environment:
 
