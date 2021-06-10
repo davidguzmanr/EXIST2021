@@ -1,4 +1,4 @@
-# exist2021
+# EXIST2021
 My solution for [EXIST (sEXism Identification in Social neTworks)](http://nlp.uned.es/exist2021/).
 
 First, create a virtual environment:
