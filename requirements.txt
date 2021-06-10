@@ -5,4 +5,12 @@ torchtext==0.8.1
 torchinfo==0.0.8
 transformers==4.5.1
 autocorrect==2.5.0
-contextualSpellCheck
+contextualSpellCheck==0.4.1
+nltk==3.5
+numpy==1.19.5
+pandas==1.2.1
+spacy==3.0.6
+en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.0.0/en_core_web_md-3.0.0-py3-none-any.whl
+es-core-news-md @ https://github.com/explosion/spacy-models/releases/download/es_core_news_md-3.0.0/es_core_news_md-3.0.0-py3-none-any.whl
+
+
