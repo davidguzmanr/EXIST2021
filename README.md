@@ -12,7 +12,7 @@ To activate it:
 source exist2021/bin/activate
 ```
 
-Then clone this repository ans install the requirements:
+Then clone this repository and install the requirements:
 ```
 git clone https://github.com/davidguzmanr/EXIST2021.git
 cd EXIST2021
