@@ -2,17 +2,19 @@
 exist2021-venv/
 
 # Files from LaTeX
-slides/slides.aux
-slides/slides.log
-slides/slides.nav
-slides/slides.out
-slides/slides.snm
-slides/slides.synctex.gz
-slides/slides.toc
+slides/Slides.aux
+slides/Slides.log
+slides/Slides.nav
+slides/Slides.out
+slides/Slides.snm
+slides/Slides.synctex.gz
+slides/Slides.toc
 
 # Notebooks I don't use anymore
 notebooks/Basic-analysis.ipynb
 notebooks/Spell-checking.ipynb
+notebooks/task1/Basic-models-task1.ipynb
+notebooks/task2/Basic-models-task2.ipynb
 
 # Images for the slides
 notebooks/images/
