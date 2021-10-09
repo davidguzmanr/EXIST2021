@@ -1,4 +1,6 @@
+from logging import exception
 import streamlit as st
+import streamlit.components.v1 as components
 
 import torch
 import numpy as np
@@ -8,6 +10,7 @@ from transformers import BertTokenizer
 from notebooks.task1.utils.evaluation import SexismClassifier as SexismClassifierTask1
 from notebooks.task2.utils.evaluation import SexismClassifier as SexismClassifierTask2
 
+from os import mkdir
 from os.path import exists
 import gdown
 from lime.lime_text import LimeTextExplainer
@@ -19,6 +22,12 @@ berttokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-uncased')
 def load_model_task1():
     model_path = 'notebooks/task1/models/sexism-classifier-task1.pt'
     if not exists(model_path):
+        # Create directory
+        try:
+            mkdir('notebooks/task1/models/')
+        except Exception as e:
+            print(e)        
+
         # Download the model
         url = 'https://drive.google.com/uc?id=1V0VbdwXDcFP6f0GrdCna1SQqqkZpBOLW'
         gdown.download(url, model_path, quiet=False)
@@ -34,6 +43,12 @@ def load_model_task1():
 def load_model_task2():
     model_path = 'notebooks/task2/models/sexism-classifier-task2.pt'
     if not exists(model_path):
+        # Create directory
+        try:
+            mkdir('notebooks/task2/models/')
+        except Exception as e:
+            print(e)
+
         # Download the model
         url = 'https://drive.google.com/uc?id=1AtE9iu5OWeTpYTeMa_xrCvsmSuGVyFdJ'
         gdown.download(url, model_path, quiet=False)
@@ -46,10 +61,6 @@ def load_model_task2():
     return model
     
 def prepape_text(text):
-    # For LimeTextExplainer because internally it uses a list of strings
-    if isinstance(text, list):
-        text = ' '.join(text)
-
     berttokenizer_dict = berttokenizer(text.lower(), max_length=128, padding='max_length', truncation=True, return_tensors='pt')
     input_ids = berttokenizer_dict['input_ids'].to(device)
     attention_mask = berttokenizer_dict['attention_mask'].to(device)
@@ -68,6 +79,16 @@ def make_prediction_task1(text):
     y_prob = prediction[y_pred]
 
     return {'label': y_label, 'probability': y_prob}
+
+def explain_predictions_task1(string_list):
+    predictions = []
+    for string in string_list:
+        input_ids, attention_mask = prepape_text(string)
+        prediction = model_task1(input_ids, attention_mask)
+        prediction = prediction.detach().cpu().numpy().squeeze()
+        predictions.append(prediction)
+
+    return np.array(predictions)
 
 def make_prediction_task2(text):
     id_to_label = {0: 'ideological-inequality', 1: 'misogyny-non-sexual-violence', 2: 'objectification', 
@@ -153,8 +174,25 @@ In particular, the competition proposes a five-classification task:
 
 st.markdown(text, unsafe_allow_html=True)
 
+"""
+## Model
+"""
+
+text = """
+<div style="text-align: justify"> 
+I applied fine-tuning to <a href="https://huggingface.co/bert-base-multilingual-uncased" target="_blank">bert-base-multilingual-uncased</a>, 
+which is a model pretrained on a large corpus of multilingual data in a self-supervised fashion, to make the classification. I chose this model
+because the task contained text in English and Spanish.
+<br><br>
+Here you can try the best model I found (sorry for the text, it's just an example):
+<br><br>
+</div>
+"""
+
+st.markdown(text, unsafe_allow_html=True)
+
 # Sorry for this, it is just to show it works
-input_text = st.text_input(label='Text', value='A silly example, like a woman', max_chars=150)
+input_text = st.text_input(label='Text', value='You look like a whore with those jeans', max_chars=150)
 
 model_task1 = load_model_task1()
 model_task2 = load_model_task2()
@@ -170,18 +208,11 @@ if prediction_task1['label'] == 'sexist':
     st.write('**Task 2:**')
     st.write(prediction_task2)
 
-# explain_pred = st.button('Explain predictions')
+explain_pred = st.button('Explain predictions')
 
-# def explain_predictions_task1(text):
-#     input_ids, attention_mask = prepape_text(text)
-#     prediction = model_task1(input_ids, attention_mask)
-#     prediction = prediction.detach().cpu().numpy()
-
-#     return prediction
-
-# if explain_pred:
-#     with st.spinner('Generating explanations'):
-#         class_names = ['not-sexist', 'sexist']
-        # explainer = LimeTextExplainer(class_names=class_names)
-        # exp = explainer.explain_instance("input text", explain_predictions_task1)
-        # components.html(exp.as_html(), height=800)
+if explain_pred:
+    with st.spinner('Generating explanations'):
+        class_names = ['not-sexist', 'sexist']
+        explainer = LimeTextExplainer(class_names=class_names, feature_selection='none', random_state=42)
+        exp = explainer.explain_instance(input_text, explain_predictions_task1, num_samples=1000)
+        components.html(exp.as_html(), height=800, scrolling=False)
