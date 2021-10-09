@@ -1,8 +1,0 @@
-\babel@toc {spanish}{}
-\beamer@sectionintoc {1}{Introducci\IeC {\'o}n}{3}{0}{1}
-\beamer@sectionintoc {2}{Motivaci\IeC {\'o}n}{4}{0}{2}
-\beamer@sectionintoc {3}{Descripci\IeC {\'o}n del problema}{5}{0}{3}
-\beamer@sectionintoc {4}{An\IeC {\'a}lisis exploratorio}{6}{0}{4}
-\beamer@sectionintoc {5}{Propuesta de soluci\IeC {\'o}n}{11}{0}{5}
-\beamer@sectionintoc {6}{Resultados}{12}{0}{6}
-\beamer@sectionintoc {7}{Conclusiones}{14}{0}{7}

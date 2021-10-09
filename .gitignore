@@ -10,6 +10,8 @@ slides/Slides.snm
 slides/Slides.synctex.gz
 slides/Slides.toc
 
+.vscode/
+
 # Notebooks I don't use anymore
 notebooks/Basic-analysis.ipynb
 notebooks/Spell-checking.ipynb
