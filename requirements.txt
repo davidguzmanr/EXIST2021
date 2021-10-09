@@ -1,4 +1,6 @@
 scikit-learn==0.24.2
+lime==0.2.0.1
+streamlit==1.0.0
 tqdm==4.56.0
 torch==1.7.1
 torchtext==0.8.1
