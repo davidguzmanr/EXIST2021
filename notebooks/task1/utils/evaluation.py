@@ -31,7 +31,7 @@ class DataSetText:
 
 class SexismClassifier(nn.Module):
     """
-    Class for the model trained for task2.
+    Class for the model trained for task1.
     """
     def __init__(self):
         super(SexismClassifier, self).__init__()
