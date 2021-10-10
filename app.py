@@ -104,6 +104,12 @@ def make_prediction_task2(text):
 
     return {'label': y_label, 'probability': y_prob}
 
+description = """
+*Model to classify and categorize sexism for the [EXIST: sEXism Identification in Social neTworks](http://nlp.uned.es/exist2021/) competition.*
+"""
+
+st.sidebar.markdown(description)
+
 """
 # EXIST: sEXism Identification in Social neTworks
 """
@@ -215,4 +221,62 @@ if explain_pred:
         class_names = ['not-sexist', 'sexist']
         explainer = LimeTextExplainer(class_names=class_names, feature_selection='none', random_state=42)
         exp = explainer.explain_instance(input_text, explain_predictions_task1, num_samples=1000)
-        components.html(exp.as_html(), height=800, scrolling=False)
+        components.html(exp.as_html(), height=400, scrolling=False)
+
+text = """
+<div style="text-align: justify"> 
+In the table below you can see the performance of my model, which is quite close to the winner of the shared task (see 
+<a href="http://nlp.uned.es/exist2021/#results" target="_blank">EXIST-2021 results</a>). 
+<br><br>
+</div>
+"""
+
+st.markdown(text, unsafe_allow_html=True)
+
+table = """
+<style type="text/css">
+.tg  {border:none;border-collapse:collapse;border-color:#ccc;border-spacing:0;margin:0px auto;}
+.tg td{background-color:#fff;border-color:#ccc;border-style:solid;border-width:0px;color:#333;
+  font-family:Arial, sans-serif;font-size:14px;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg th{background-color:#f0f0f0;border-color:#ccc;border-style:solid;border-width:0px;color:#333;
+  font-family:Arial, sans-serif;font-size:14px;font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
+.tg .tg-c3ow{border-color:inherit;text-align:center;vertical-align:top}
+.tg .tg-mxj2{background-color:#f9f9f9;border-color:inherit;font-style:italic;text-align:center;vertical-align:top}
+.tg .tg-yynm{background-color:#f0f0f0;border-color:#000000;color:#333333;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-7btt{border-color:inherit;font-weight:bold;text-align:center;vertical-align:top}
+.tg .tg-abip{background-color:#f9f9f9;border-color:inherit;text-align:center;vertical-align:top}
+</style>
+<table class="tg">
+<thead>
+  <tr>
+    <th class="tg-yynm" rowspan="2">Model</th>
+    <th class="tg-7btt" colspan="2">Task 1: Sexism Identification</th>
+    <th class="tg-7btt" colspan="2">Task 2: Sexism Categorization</th>
+  </tr>
+  <tr>
+    <th class="tg-mxj2">Accuracy</th>
+    <th class="tg-mxj2">F1</th>
+    <th class="tg-mxj2">Accuracy</th>
+    <th class="tg-mxj2">F1</th>
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td class="tg-c3ow">AI-UPV (winner)</td>
+    <td class="tg-c3ow">0.7804</td>
+    <td class="tg-c3ow">0.7802</td>
+    <td class="tg-c3ow">0.6577</td>
+    <td class="tg-c3ow">0.5787</td>
+  </tr>
+  <tr>
+    <td class="tg-abip">My model</td>
+    <td class="tg-abip">0.7537</td>
+    <td class="tg-abip">0.7519</td>
+    <td class="tg-abip">0.6165</td>
+    <td class="tg-abip">0.5308</td>
+  </tr>
+</tbody>
+</table>
+"""
+
+st.markdown(table, unsafe_allow_html=True)
